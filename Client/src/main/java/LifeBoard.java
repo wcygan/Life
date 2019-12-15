@@ -21,7 +21,7 @@ import java.util.*;
 
 public class LifeBoard extends Application {
 
-    // Control board size on an 800x800 window
+    // Control board size on an 800x900 window
     int n = 100;
     int size = 800/n;
     Controller c;
@@ -227,7 +227,7 @@ public class LifeBoard extends Application {
 
                 // When left-mouse is clicked
                 if (event.getButton() == MouseButton.PRIMARY) {
-                    // Are these nested switches and repeated board activations? No..
+                    // Are these nested switches and repeated board activations a good idea? No..
                     // Am I going to do it anyway? Yes...
 
                     /*
