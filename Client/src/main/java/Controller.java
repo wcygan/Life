@@ -8,26 +8,27 @@ public class Controller extends Thread {
     Controller(LifeBoard.Tile[][] board, int n){
         this.board = board;
         this.n = n;
-        time = 200;
+        time = 75;
     }
 
     @Override
     public void run(){
         while (true){
-
-            CountDownLatch l = new CountDownLatch(4);
-            for (int i = 1; i < 5; i++) {
-                GenerationChecker g = new GenerationChecker(board, n, i, l);
-                g.start();
-            }
-
             try {
-                l.await();
-                for (LifeBoard.Tile[] row : board){
-                    for (LifeBoard.Tile t : row){
-                        t.changeGeneration();
-                    }
+
+                CountDownLatch l = new CountDownLatch(4);
+                for (int i = 1; i < 5; i++) {
+                    GenerationChecker g = new GenerationChecker(board, n, i, l);
+                    g.start();
                 }
+                l.await();
+
+                CountDownLatch l2 = new CountDownLatch(4);
+                for (int i = 1; i < 5; i++) {
+                    Swapper s = new Swapper(board, n, i, l2);
+                    s.start();
+                }
+                l2.await();
 
                 sleep(time);
             } catch (Exception e){

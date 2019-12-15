@@ -1,6 +1,6 @@
 import java.util.concurrent.CountDownLatch;
 
-public class GenerationChecker extends Thread {
+public class Swapper extends Thread {
 
     // Board and latch
     private LifeBoard.Tile[][] board;
@@ -9,7 +9,7 @@ public class GenerationChecker extends Thread {
     // Number of tiles (NxN) and quadrant to determine where we should search
     private int n, myQuadrant, minX, minY, maxX, maxY;
 
-    GenerationChecker(LifeBoard.Tile[][] board, int n, int myQuadrant, CountDownLatch l){
+    Swapper(LifeBoard.Tile[][] board, int n, int myQuadrant, CountDownLatch l){
         this.board = board;
         this.n = n;
         this.myQuadrant = myQuadrant;
@@ -57,34 +57,11 @@ public class GenerationChecker extends Thread {
 
         for (int x = minX; x < maxX; x++){
             for (int y = minY; y < maxY; y++){
-
-                LifeBoard.Tile t  =board[x][y];
-                int aliveNeighbors = t.numNeigborsAlive();
-
-                // T is active
-                if (t.isActive()) {
-                    if (aliveNeighbors < 2){
-                        t.setNextLife(false);
-                    }
-                    else if (aliveNeighbors > 3){
-                        t.setNextLife(false);
-                    }
-                    else {
-                        t.setNextLife(true);
-                    }
-                }
-                // T is not active
-                else {
-                    if (!t.isActive() && aliveNeighbors == 3){
-                        t.setNextLife(true);
-                    }
-                    else {
-                        t.setNextLife(false);
-                    }
+                synchronized (board){
+                    board[x][y].changeGeneration();
                 }
             }
         }
-
         // Finally, countdown the latch...
         latch.countDown();
     }

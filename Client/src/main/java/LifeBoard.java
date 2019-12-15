@@ -22,7 +22,7 @@ import java.util.*;
 public class LifeBoard extends Application {
 
     // Control board size on an 800x800 window
-    int n = 50;
+    int n = 100;
     int size = 800/n;
     Controller c;
 
@@ -31,17 +31,28 @@ public class LifeBoard extends Application {
     private Tile[][] board = new Tile[n][n];
     private Pane pane;
 
+    // Time modification variables
     TextField timing;
     Button start, setTime;
+    boolean started = false;
+
+    // Buttons to create patterns
+    /*
+        Modes:
+            1  :  Tile
+            2  :  Glider
+            3  :  Gun
+            4  :  Blinker
+            5  :  Pulsar
+     */
+    int mode;
+    Button tile, glider, gun, blinker, pulsar;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        primaryStage.setTitle("Employee Tracker");
+        primaryStage.setTitle("Life");
         init_vars();
         sceneMap.put("Main", createMainScreen());
-
-
-
 
 
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -73,13 +84,66 @@ public class LifeBoard extends Application {
 
         start = new Button("Start");
         start.setOnAction(event -> {
+            started = true;
             start.setDisable(true);
             setTime.setDisable(false);
             c = new Controller(board, n);
             c.start();
         });
 
+        // Start in tile mode
+        mode = 1;
 
+        tile = new Button("Tile");
+        tile.setOnAction(event -> {
+            mode = 1;
+            tile.setDisable(true);
+            glider.setDisable(false);
+            gun.setDisable(false);
+            blinker.setDisable(false);
+            pulsar.setDisable(false);
+        });
+
+
+        glider = new Button("Glider");
+        glider.setOnAction(event -> {
+            mode = 2;
+            tile.setDisable(false);
+            glider.setDisable(true);
+            gun.setDisable(false);
+            blinker.setDisable(false);
+            pulsar.setDisable(false);
+        });
+
+        gun = new Button("Gun");
+        gun.setOnAction(event -> {
+            mode = 3;
+            tile.setDisable(false);
+            glider.setDisable(false);
+            gun.setDisable(true);
+            blinker.setDisable(false);
+            pulsar.setDisable(false);
+        });
+
+        blinker = new Button("Blinker");
+        blinker.setOnAction(event -> {
+            mode = 4;
+            tile.setDisable(false);
+            glider.setDisable(false);
+            gun.setDisable(false);
+            blinker.setDisable(true);
+            pulsar.setDisable(false);
+        });
+
+        pulsar = new Button("Pulsar");
+        pulsar.setOnAction(event -> {
+            mode = 5;
+            tile.setDisable(false);
+            glider.setDisable(false);
+            gun.setDisable(false);
+            blinker.setDisable(false);
+            pulsar.setDisable(true);
+        });
     }
 
 
@@ -97,16 +161,29 @@ public class LifeBoard extends Application {
                 board[j][i] = tile;
             }
         }
+
+        VBox v1 = new VBox(new Label("Patterns:"), tile);
+        VBox v2 = new VBox(glider, gun);
+        VBox v3 = new VBox(blinker, pulsar);
+        v1.setSpacing(10);
+        v2.setSpacing(10);
+        v3.setSpacing(10);
+
+        HBox patterns = new HBox(v1, v2, v3);
+        patterns.setAlignment(Pos.CENTER);
+        patterns.setSpacing(10);
+
+
         p.setCenter(pane);
         HBox ts = new HBox(timing, setTime);
         ts.setAlignment(Pos.CENTER);
         ts.setSpacing(10);
-        HBox elems = new HBox(ts , start);
-        elems.setSpacing(20);
+        HBox elems = new HBox(patterns, ts , start);
+        elems.setSpacing(30);
         elems.setAlignment(Pos.CENTER);
         elems.setPadding(new Insets(0, 0, 20, 0));
         p.setBottom(elems);
-        return new Scene(p, 800, 1000);
+        return new Scene(p, 800, 900);
     }
 
 
@@ -128,10 +205,34 @@ public class LifeBoard extends Application {
             getChildren().addAll(border);
 
             setOnMouseClicked(event -> {
+                if (started) return;
+
                 // When left-mouse is clicked
                 if (event.getButton() == MouseButton.PRIMARY) {
-                    activate();
-                    System.out.println(numNeigborsAlive());
+                    switch (mode){
+                        case (1):
+                            activate();
+                            break;
+                        case (2):
+                            // check if there is enough room to create pattern
+                            // set pattern in blocks...
+                            break;
+                        case (3):
+                            // check if there is enough room to create pattern
+                            // set pattern in blocks...
+                            break;
+                        case (4):
+                            // check if there is enough room to create pattern
+                            // set pattern in blocks...
+                            break;
+                        case (5):
+                            // check if there is enough room to create pattern
+                            // set pattern in blocks...
+                            break;
+                    }
+                }
+                else if (event.getButton() == MouseButton.SECONDARY){
+                    deactivate();
                 }
             });
         }
@@ -186,6 +287,5 @@ public class LifeBoard extends Application {
     // Main
     public static void main(String[] args) {
         launch(args);
-
     }
 }
