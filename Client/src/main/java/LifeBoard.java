@@ -27,6 +27,7 @@ public class LifeBoard extends Application {
     Controller c;
 
     // Utility variables
+    Random r = new Random(System.currentTimeMillis());
     private HashMap<String, Scene> sceneMap;
     private Tile[][] board = new Tile[n][n];
     private Pane pane;
@@ -41,12 +42,13 @@ public class LifeBoard extends Application {
         Modes:
             1  :  Tile
             2  :  Glider
-            3  :  Gun
+            3  :  upGun
             4  :  Blinker
             5  :  Pulsar
+            6  :  downGun
      */
     int mode;
-    Button tile, glider, gun, blinker, pulsar;
+    Button tile, glider, upGun, downGun, blinker, pulsar;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -99,7 +101,8 @@ public class LifeBoard extends Application {
             mode = 1;
             tile.setDisable(true);
             glider.setDisable(false);
-            gun.setDisable(false);
+            upGun.setDisable(false);
+            downGun.setDisable(false);
             blinker.setDisable(false);
             pulsar.setDisable(false);
         });
@@ -110,17 +113,30 @@ public class LifeBoard extends Application {
             mode = 2;
             tile.setDisable(false);
             glider.setDisable(true);
-            gun.setDisable(false);
+            upGun.setDisable(false);
+            downGun.setDisable(false);
             blinker.setDisable(false);
             pulsar.setDisable(false);
         });
 
-        gun = new Button("Gun");
-        gun.setOnAction(event -> {
+        upGun = new Button("upGun");
+        upGun.setOnAction(event -> {
             mode = 3;
             tile.setDisable(false);
             glider.setDisable(false);
-            gun.setDisable(true);
+            upGun.setDisable(true);
+            downGun.setDisable(false);
+            blinker.setDisable(false);
+            pulsar.setDisable(false);
+        });
+
+        downGun = new Button("downGun");
+        downGun.setOnAction(event -> {
+            mode = 6;
+            tile.setDisable(false);
+            glider.setDisable(false);
+            upGun.setDisable(false);
+            downGun.setDisable(true);
             blinker.setDisable(false);
             pulsar.setDisable(false);
         });
@@ -130,7 +146,8 @@ public class LifeBoard extends Application {
             mode = 4;
             tile.setDisable(false);
             glider.setDisable(false);
-            gun.setDisable(false);
+            upGun.setDisable(false);
+            downGun.setDisable(false);
             blinker.setDisable(true);
             pulsar.setDisable(false);
         });
@@ -140,7 +157,8 @@ public class LifeBoard extends Application {
             mode = 5;
             tile.setDisable(false);
             glider.setDisable(false);
-            gun.setDisable(false);
+            upGun.setDisable(false);
+            downGun.setDisable(false);
             blinker.setDisable(false);
             pulsar.setDisable(true);
         });
@@ -162,8 +180,8 @@ public class LifeBoard extends Application {
             }
         }
 
-        VBox v1 = new VBox(new Label("Patterns:"), tile);
-        VBox v2 = new VBox(glider, gun);
+        VBox v1 = new VBox(glider, tile);
+        VBox v2 = new VBox(upGun, downGun);
         VBox v3 = new VBox(blinker, pulsar);
         v1.setSpacing(10);
         v2.setSpacing(10);
@@ -209,6 +227,18 @@ public class LifeBoard extends Application {
 
                 // When left-mouse is clicked
                 if (event.getButton() == MouseButton.PRIMARY) {
+                    // Are these nested switches and repeated board activations? No..
+                    // Am I going to do it anyway? Yes...
+
+                    /*
+                    Modes:
+                        1  :  Tile
+                        2  :  Glider
+                        3  :  Gun
+                        4  :  Blinker
+                        5  :  Pulsar
+                    */
+
                     switch (mode){
                         case (1):
                             activate();
@@ -216,18 +246,246 @@ public class LifeBoard extends Application {
                         case (2):
                             // check if there is enough room to create pattern
                             // set pattern in blocks...
+                            if (x - 3 > 0 && x < n - 3 && y - 3> 0 && y < n - 3){
+                                int i = r.nextInt(4);
+                                switch (i){
+                                    case (0):
+                                        board[x-1][y+1].activate();
+                                        board[x-1][y-1].activate();
+                                        board[x-1][y].activate();
+                                        board[x][y-1].activate();
+                                        board[x+1][y].activate();
+                                        break;
+                                    case (1):
+                                        board[x-1][y-1].activate();
+                                        board[x][y-1].activate();
+                                        board[x+1][y-1].activate();
+                                        board[x+1][y].activate();
+                                        board[x][y+1].activate();
+                                        break;
+                                    case (2):
+                                        board[x-1][y].activate();
+                                        board[x][y+1].activate();
+                                        board[x+1][y+1].activate();
+                                        board[x+1][y].activate();
+                                        board[x+1][y-1].activate();
+                                        break;
+                                    case (3):
+                                        board[x-1][y+1].activate();
+                                        board[x][y+1].activate();
+                                        board[x+1][y+1].activate();
+                                        board[x-1][y].activate();
+                                        board[x][y-1].activate();
+                                        break;
+                                }
+                            }
+                            else {
+                                return;
+                            }
                             break;
+
+                        // Gun
                         case (3):
                             // check if there is enough room to create pattern
                             // set pattern in blocks...
+
+                            if (x - 20 > 0 && x < n - 20 && y - 7 > 0 && y < n - 7){
+
+
+                                // Left Half of gun
+                                board[x][y-1].activate();
+                                board[x-1][y].activate();
+                                board[x-1][y-1].activate();
+                                board[x-1][y-2].activate();
+                                board[x-2][y+1].activate();
+                                board[x-3][y-1].activate();
+                                board[x-2][y-3].activate();
+                                board[x-4][y+2].activate();
+                                board[x-5][y+2].activate();
+                                board[x-6][y+1].activate();
+                                board[x-4][y-4].activate();
+                                board[x-5][y-4].activate();
+                                board[x-6][y-3].activate();
+                                board[x-7][y-2].activate();
+                                board[x-7][y-1].activate();
+                                board[x-7][y].activate();
+                                board[x-16][y].activate();
+                                board[x-17][y].activate();
+                                board[x-16][y-1].activate();
+                                board[x-17][y-1].activate();
+
+                                // Right half of gun
+                                board[x+3][y].activate();
+                                board[x+3][y+1].activate();
+                                board[x+3][y+2].activate();
+                                board[x+4][y].activate();
+                                board[x+4][y+1].activate();
+                                board[x+4][y+2].activate();
+                                board[x+5][y-1].activate();
+                                board[x+7][y-1].activate();
+                                board[x+7][y-2].activate();
+                                board[x+5][y+3].activate();
+                                board[x+7][y+3].activate();
+                                board[x+7][y+4].activate();
+                                board[x+17][y+1].activate();
+                                board[x+17][y+2].activate();
+                                board[x+18][y+1].activate();
+                                board[x+18][y+2].activate();
+
+
+
+
+
+                            }
+                            else {
+                                return;
+                            }
+
+
                             break;
                         case (4):
                             // check if there is enough room to create pattern
                             // set pattern in blocks...
+                            if (x - 3 > 0 && x < n - 3 && y - 3> 0 && y < n - 3){
+
+                                int i = r.nextInt(2);
+                                switch (i){
+                                    case (0):
+                                        board[x+1][y].activate();
+                                        activate();
+                                        board[x-1][y].activate();
+                                        break;
+
+                                    case(1):
+                                        board[x][y+1].activate();
+                                        activate();
+                                        board[x][y-1].activate();
+                                        break;
+                                }
+                            }
+                            else {
+                                return;
+                            }
                             break;
                         case (5):
                             // check if there is enough room to create pattern
                             // set pattern in blocks...
+
+                            if (x - 7 > 0 && x < n - 7 && y - 7 > 0 && y < n - 7){
+                                // Top Left of Pulsar
+                                board[x-3][y+1].activate();
+                                board[x-2][y+1].activate();
+                                board[x-4][y+1].activate();
+                                board[x-1][y+2].activate();
+                                board[x-1][y+3].activate();
+                                board[x-1][y+4].activate();
+                                board[x-2][y+6].activate();
+                                board[x-3][y+6].activate();
+                                board[x-4][y+6].activate();
+                                board[x-6][y+2].activate();
+                                board[x-6][y+3].activate();
+                                board[x-6][y+4].activate();
+
+                                // Bottom Left of Pulsar
+                                board[x-3][y-1].activate();
+                                board[x-2][y-1].activate();
+                                board[x-4][y-1].activate();
+                                board[x-1][y-2].activate();
+                                board[x-1][y-3].activate();
+                                board[x-1][y-4].activate();
+                                board[x-2][y-6].activate();
+                                board[x-3][y-6].activate();
+                                board[x-4][y-6].activate();
+                                board[x-6][y-2].activate();
+                                board[x-6][y-3].activate();
+                                board[x-6][y-4].activate();
+
+                                // Top Right of Pulsar
+                                board[x+3][y+1].activate();
+                                board[x+2][y+1].activate();
+                                board[x+4][y+1].activate();
+                                board[x+1][y+2].activate();
+                                board[x+1][y+3].activate();
+                                board[x+1][y+4].activate();
+                                board[x+2][y+6].activate();
+                                board[x+3][y+6].activate();
+                                board[x+4][y+6].activate();
+                                board[x+6][y+2].activate();
+                                board[x+6][y+3].activate();
+                                board[x+6][y+4].activate();
+
+                                // Bottom Right of Pulsar
+                                board[x+3][y-1].activate();
+                                board[x+2][y-1].activate();
+                                board[x+4][y-1].activate();
+                                board[x+1][y-2].activate();
+                                board[x+1][y-3].activate();
+                                board[x+1][y-4].activate();
+                                board[x+2][y-6].activate();
+                                board[x+3][y-6].activate();
+                                board[x+4][y-6].activate();
+                                board[x+6][y-2].activate();
+                                board[x+6][y-3].activate();
+                                board[x+6][y-4].activate();
+                            }
+                            else {
+                                return;
+                            }
+                            break;
+
+                        case (6):
+                            // check if there is enough room to create pattern
+                            // set pattern in blocks...
+
+                            if (x - 20 > 0 && x < n - 20 && y - 7 > 0 && y < n - 7){
+                                // Left Half of gun
+                                board[x][y+1].activate();
+                                board[x-1][y+2].activate();
+                                board[x-1][y+1].activate();
+                                board[x-1][y].activate();
+                                board[x-2][y+3].activate();
+                                board[x-3][y+1].activate();
+                                board[x-2][y-1].activate();
+                                board[x-4][y+4].activate();
+                                board[x-5][y+4].activate();
+                                board[x-6][y+3].activate();
+                                board[x-4][y-2].activate();
+                                board[x-5][y-2].activate();
+                                board[x-6][y-1].activate();
+                                board[x-7][y].activate();
+                                board[x-7][y+1].activate();
+                                board[x-7][y+2].activate();
+                                board[x-16][y+2].activate();
+                                board[x-17][y+2].activate();
+                                board[x-16][y+1].activate();
+                                board[x-17][y+1].activate();
+
+                                // Right half of gun
+                                board[x+3][y-2].activate();
+                                board[x+3][y-1].activate();
+                                board[x+3][y].activate();
+                                board[x+4][y-2].activate();
+                                board[x+4][y-1].activate();
+                                board[x+4][y].activate();
+                                board[x+5][y-3].activate();
+                                board[x+7][y-3].activate();
+                                board[x+7][y-4].activate();
+                                board[x+5][y+1].activate();
+                                board[x+7][y+1].activate();
+                                board[x+7][y+2].activate();
+                                board[x+17][y-1].activate();
+                                board[x+17][y].activate();
+                                board[x+18][y-1].activate();
+                                board[x+18][y].activate();
+
+
+
+                            }
+                            else {
+                                return;
+                            }
+
+
                             break;
                     }
                 }
@@ -236,6 +494,7 @@ public class LifeBoard extends Application {
                 }
             });
         }
+
 
         public void setNextLife(boolean n){
             nextLife = n;
