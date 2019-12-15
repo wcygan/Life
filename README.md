@@ -1,9 +1,23 @@
-# Life
-Game of Life (kinda?)
+## Life
 
 ![](life5.gif)
 
-![](life.gif)
+Rules:
+*Any live cell with two or three neighbors survives.
+*Any dead cell with three live neighbors becomes a live cell.
+*All other live cells die in the next generation. Similarly, all other dead cells stay dead.
 
+## Technologies
+Project is built using:
+* Java 8
+* JavaFX
+* Maven (https://maven.apache.org/)
 
-![](life2.gif)
+## Setup
+To run the program, clone this repository and navigate to the Client folder. Once inside, use the Maven compile command to begin.
+
+```
+> cd Client
+> mvn compile
+```
+
