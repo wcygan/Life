@@ -1,6 +1,7 @@
 # Life
 Game of Life (kinda?)
 
+![](life5.gif)
 
 ![](life.gif)
 
