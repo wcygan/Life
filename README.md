@@ -10,4 +10,4 @@ The game is a zero-player game, meaning that its evolution is determined by its 
 * All other live cells die in the next generation. Similarly, all other dead cells stay dead.
 
 ## Warning:
-* this code is bad, maybe I'll fit it in 2021
+* this code is bad, maybe I'll fix it in 2021
