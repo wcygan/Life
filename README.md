@@ -1,5 +1,7 @@
 ## Life
 
+[R.I.P. John :(](https://www.nytimes.com/2020/12/28/science/math-conway-game-of-life.html)
+
 The game is a zero-player game, meaning that its evolution is determined by its initial state, requiring no further input. One interacts with the Game of Life by creating an initial configuration and observing how it evolves.
 
 ![](life2.gif)
